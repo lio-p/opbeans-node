@@ -8,8 +8,8 @@ RUN npm install
 
 RUN npm install pm2 -g
 
-COPY --from=docker.elastic.co/employees/lio-p/opbeans-node-hipster /app/build /app/client/build
-COPY --from=docker.elastic.co/employees/lio-p/opbeans-node-hipster /app/package.json /app/client/package.json
+COPY --from=docker.elastic.co/employees/lio-p/opbeans-frontend-hipster /app/build /app/client/build
+COPY --from=docker.elastic.co/employees/lio-p/opbeans-frontend-hipster /app/package.json /app/client/package.json
 
 LABEL \
     org.label-schema.schema-version="1.0" \
