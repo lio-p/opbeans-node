@@ -17,7 +17,9 @@ var conf = module.exports = {
     port: process.env.OPBEANS_SERVER_PORT || process.env.PORT || 3000
   },
   pg: {
-    database: process.env.PGDATABASE || 'opbeans'
+    database: 'opbeans',
+    user: 'postgres',
+    password: 'hunter2'
   },
   redis: process.env.REDIS_URL || null,
   apm: {

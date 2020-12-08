@@ -131,10 +131,11 @@ app.get('*', function (req, res, next) {
       rumConfig.pageLoadSpanId = transaction.ensureParentId()
       rumConfig.pageLoadSampled = transaction.sampled
     }
+    const user = req.headers.username || "John Doe"
 
     const body = data.toString()
       .replace('<script type="text/javascript" src="/rum-config.js"></script>', '')
-      .replace('<head>', `<head><script>window.rumConfig = ${JSON.stringify(rumConfig)}</script>`)
+      .replace('<head>', `<head><script>window.rumConfig = ${JSON.stringify(rumConfig)}; window.user = '${user}'</script>`)
 
     res.setHeader('Content-Type', 'text/html')
     res.setHeader('Content-Length', Buffer.byteLength(body))

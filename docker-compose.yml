@@ -1,43 +1,43 @@
 version: "2.1"
 services:
-  opbeans-node:
-    build: .
-    image: opbeans/opbeans-node:latest
-    ports:
-      - "127.0.0.1:${OPBEANS_NODE_PORT:-8000}:3000"
-    container_name: opbeans-node
-    logging:
-      driver: 'json-file'
-      options:
-          max-size: '2m'
-          max-file: '5'
-    environment:
-      - ELASTIC_APM_SERVICE_NAME=${ELASTIC_APM_SERVICE_NAME:-opbeans-node}
-      - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL:-http://apm-server:8200}
-      - ELASTIC_APM_APPLICATION_PACKAGES=co.elastic.apm.opbeans
-      - ELASTIC_APM_JS_SERVER_URL=${ELASTIC_APM_JS_SERVER_URL:-http://localhost:8200}
-      - ELASTIC_APM_JS_SERVICE_NAME=${ELASTIC_APM_JS_SERVICE_NAME:-opbeans-react}
-      - NODE_ENV=test
-      - OPBEANS_SERVER_PORT=${OPBEANS_SERVER_PORT:-3000}
-      - PGHOST=postgres
-      - PGUSER=postgres
-      - PGPASSWORD=hunter2
-      - PGDATABASE=opbeans
-      - REDIS_URL=redis://redis:6379
-    depends_on:
-      apm-server:
-        condition: service_healthy
-      postgres:
-        condition: service_healthy
-      redis:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD", "wget", "-q", "--server-response", "-O", "/dev/null", "http://opbeans-node:3000/"]
-      interval: 10s
-      retries: 10
+  # opbeans-node:
+  #   build: .
+  #   image: docker.elastic.co/employees/lio-p/opbeans-node-hipster
+  #   ports:
+  #     - "127.0.0.1:${OPBEANS_NODE_PORT:-8000}:3000"
+  #   container_name: opbeans-node
+  #   logging:
+  #     driver: 'json-file'
+  #     options:
+  #         max-size: '2m'
+  #         max-file: '5'
+  #   environment:
+  #     - ELASTIC_APM_SERVICE_NAME=${ELASTIC_APM_SERVICE_NAME:-opbeans-node}
+  #     - ELASTIC_APM_SERVER_URL=${ELASTIC_APM_SERVER_URL:-http://apm-server:8200}
+  #     - ELASTIC_APM_APPLICATION_PACKAGES=co.elastic.apm.opbeans
+  #     - ELASTIC_APM_JS_SERVER_URL=${ELASTIC_APM_JS_SERVER_URL:-http://localhost:8200}
+  #     - ELASTIC_APM_JS_SERVICE_NAME=${ELASTIC_APM_JS_SERVICE_NAME:-opbeans-react}
+  #     - NODE_ENV=test
+  #     - OPBEANS_SERVER_PORT=${OPBEANS_SERVER_PORT:-3000}
+  #     - PGHOST=postgres
+  #     - PGUSER=postgres
+  #     - PGPASSWORD=hunter2
+  #     - PGDATABASE=opbeans
+  #     - REDIS_URL=redis://redis:6379
+  #   depends_on:
+  #     apm-server:
+  #       condition: service_healthy
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-q", "--server-response", "-O", "/dev/null", "http://opbeans-node:3000/"]
+  #     interval: 10s
+  #     retries: 10
 
   apm-server:
-    image: docker.elastic.co/apm/apm-server:${STACK_VERSION:-7.3.0}
+    image: docker.elastic.co/apm/apm-server:${STACK_VERSION:-7.10.0}
     ports:
       - "127.0.0.1:${APM_SERVER_PORT:-8200}:8200"
       - "127.0.0.1:${APM_SERVER_MONITOR_PORT:-6060}:6060"
@@ -75,7 +75,7 @@ services:
       interval: 10s
 
   elasticsearch:
-    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION:-7.3.0}
+    image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION:-7.10.0}
     environment:
       - cluster.name=docker-cluster
       - xpack.security.enabled=false
@@ -83,7 +83,7 @@ services:
       - network.host=0.0.0.0
       - discovery.type=single-node
       - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
-      - "path.data=/usr/share/elasticsearch/data/${STACK_VERSION:-7.3.0}"
+      - "path.data=/usr/share/elasticsearch/data/${STACK_VERSION:-7.10.0}"
     ulimits:
       memlock:
         soft: -1
@@ -104,7 +104,7 @@ services:
       - esdata:/usr/share/elasticsearch/data
 
   kibana:
-    image: docker.elastic.co/kibana/kibana:${STACK_VERSION:-7.3.0}
+    image: docker.elastic.co/kibana/kibana:${STACK_VERSION:-7.10.0}
     environment:
       SERVER_NAME: kibana.example.org
       ELASTICSEARCH_URL: http://elasticsearch:9200
@@ -153,7 +153,7 @@ services:
   wait:
     image: busybox
     depends_on:
-      opbeans-node:
+      postgres:
         condition: service_healthy
 
   loadPgData:
